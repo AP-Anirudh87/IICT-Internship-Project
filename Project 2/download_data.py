@@ -12,7 +12,8 @@ import urllib.request
 
 # ── Configuration ────────────────────────────────────────────────────────────
 DATASET_URL = (
-    "https://raw.githubusercontent.com/SINANFIROZ/Phishing-Email-Detector/master/Phishing_Email.csv"
+    "https://raw.githubusercontent.com/"
+    "SINANFIROZ/Phishing-Email-Detector/master/Phishing_Email.csv"
 )
 DATA_DIR  = os.path.join(os.path.dirname(__file__), "data")
 SAVE_PATH = os.path.join(DATA_DIR, "Phishing_Email.csv")

@@ -227,7 +227,7 @@ def load_or_train_model():
     if os.path.exists(PICKLE_PATH):
         with open(PICKLE_PATH, "rb") as f:
             bundle = pickle.load(f)
-        return bundle["vectorizer"], bundle.get("scaler"), bundle["model"], bundle.get("model_name", "Model")
+        return bundle["vectorizer"], bundle.get("scaler"), bundle["model"], bundle.get("name", bundle.get("model_name", "MLP Neural Network"))
 
     # Fallback: train on-the-fly if data exists
     if not os.path.exists(DATA_PATH):
@@ -243,7 +243,7 @@ def load_or_train_model():
     df.drop(columns=[c for c in df.columns if "Unnamed" in c], inplace=True)
     df.dropna(subset=["text"], inplace=True)
     df["text"]      = df["text"].astype(str)
-    df["label_int"] = (df["label"] == "Phishing Email").astype(int)
+    df["label_int"] = df["label"].apply(lambda x: 1 if "phish" in str(x).lower() else 0)
 
     def clean(t):
         t = re.sub(r"https?://\S+", " URL ", t)

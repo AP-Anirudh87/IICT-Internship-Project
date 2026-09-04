@@ -1,248 +1,495 @@
-# IICT Internship Projects
+<div align="center">
 
-This repository contains two Machine Learning projects focused on cybersecurity and misinformation detection. Both projects feature complete pipelines: automated data handling, text preprocessing, training multiple AI models (Naive Bayes, Logistic Regression, Random Forest, MLP Neural Networks), and beautiful interactive Web Apps.
+# 🛡️ Dual AI Defense Systems: Fake News & Phishing Detection
+### **Indian Institute of Computing and Technology (IICT) Internship Project**
+**Natural Language Processing • Machine Learning • Cybersecurity Engineering**
+
+[![Python 3.9+](https://img.shields.io/badge/Python-3.9%2B-blue.svg?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Scikit-Learn](https://img.shields.io/badge/scikit--learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=Streamlit&logoColor=white)](https://streamlit.io/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg?style=for-the-badge)](https://github.com/AP-Anirudh87/IICT-Internship)
+
+<p align="center">
+  <b>A comprehensive dual-pipeline machine learning framework engineered for automated digital deception mitigation: Combating disinformation through linguistic verification (TruthGuard AI) and neutralizing cyber social engineering through hybrid structural-textual telemetry (PhishGuard AI).</b>
+</p>
+
+[Key Innovations](#-key-innovations--engineering-highlights) •
+[Project 1: TruthGuard AI](#-project-1-truthguard-ai--fake-news-classification) •
+[Project 2: PhishGuard AI](#-project-2-phishguard-ai--hybrid-phishing-detection) •
+[Model Benchmarks](#-comparative-model-benchmarks) •
+[Quickstart Guide](#-quickstart--execution-guide) •
+[Test Examples](#-live-verification--test-examples) •
+[Codespaces Setup](#option-c-running-in-github-codespaces-1-click-cloud-container) •
+[Cloud Deployment](#option-d-free-public-web-deployment-streamlit-community-cloud) •
+[Multi-PC Setup](#-zero-configuration-portability-cloning-to-any-other-pc)
+
+---
+</div>
+
+## 📌 Executive Summary
+
+Developed during the internship at the **Indian Institute of Computing and Technology (IICT)**, this repository implements two end-to-end Machine Learning systems designed to detect and counter malicious digital threats:
+
+1. **TruthGuard AI (Fake News Detection):** An advanced Natural Language Processing system analyzing over 6,300 long-form political articles. Integrates both ground-up mathematical implementations (custom Bag-of-Words & TF-IDF) and industry-standard vectorizers to benchmark KNN, Logistic Regression, Random Forest, and Multi-Layer Perceptrons (MLP).
+2. **PhishGuard AI (Phishing Email Detection):** An enterprise-grade cybersecurity detection engine trained on over 18,600 emails. Features a novel **Hybrid Feature Fusion Architecture** combining 10,000 sparse TF-IDF semantic features with 12 structural/behavioral heuristic signals via sparse matrix concatenation (`scipy.sparse.hstack`).
+
+Both solutions feature full automated ETL pipelines, cross-model diagnostic suites (Confusion Matrices, ROC-AUC curves, Gini feature importance, log-odds feature coefficients), and production-grade **Streamlit web applications** offering sub-second real-time inference.
 
 ---
 
-## 📰 Project 1: Fake News Detection
-**TruthGuard AI** is an advanced Natural Language Processing (NLP) system designed to detect fabricated political news articles and clickbait. 
+## 🚀 Key Innovations & Engineering Highlights
 
-### 🧠 Comprehensive Project Details & Methodology
+| Feature | TruthGuard AI (Fake News) | PhishGuard AI (Phishing Emails) |
+| :--- | :--- | :--- |
+| **Primary Domain** | NLP & Misinformation Forensics | Cybersecurity & Threat Intelligence |
+| **Dataset Scale** | 6,335 articles (Title + Body) | 18,650 real-world emails |
+| **Feature Space** | 10,000 Unigram/Bigram TF-IDF with sublinear scaling | **10,012-Dimensional Hybrid Matrix** (10,000 TF-IDF + 12 Structural Signals) |
+| **Algorithmic Breadth** | KNN (k=5), Logistic Regression, Random Forest, MLP | Complement Naive Bayes, Logistic Regression, Random Forest, MLP |
+| **Top Performing Model** | **MLP Neural Network (93.8% F1-Score / 99.4% Benchmark)** | **MLP Neural Network (96.6% F1-Score / 98.9% Benchmark)** |
+| **Explainability** | Top discriminatory n-grams & prediction probability | Gini importance ranking, LR odds ratios, behavioral breakdown |
+| **Deployment** | Responsive Streamlit Web Application | SOC-style Cybersecurity Dashboard with Risk Telemetry |
 
-#### 1. Project Objective
-The primary objective of TruthGuard AI is to combat the spread of digital misinformation by automatically classifying news articles as either factual or fabricated. This is achieved using a robust Natural Language Processing (NLP) pipeline combined with classical and deep machine learning algorithms.
+---
 
-#### 2. Dataset Architecture
-* **Source:** ISOT Fake News Dataset (accessed via Kaggle API).
-* **Volume:** Over 40,000 full-length articles.
-* **Composition:** 
-  * **Real News:** Authentic political and world news articles scraped from Reuters.com.
-  * **Fake News:** Fabricated articles collected from flagged unreliable websites and clickbait domains by PolitiFact.
-* **Labeling:** Binary classification (0 = Real News, 1 = Fake News).
+## 📰 Project 1: TruthGuard AI — Fake News Classification
 
-#### 3. Preprocessing Pipeline
-To ensure the models learn from semantic meaning rather than structural noise, a rigorous, zero-dependency custom regex pipeline cleans the raw text:
-* **HTML Stripping:** Removes stray web tags.
-* **Entity Redaction:** Replaces all URLs with the token `URL` and email addresses with `EMAIL`.
-* **Alphanumeric Normalization:** Strips all punctuation and special characters, retaining only alphabetical characters and spaces.
-* **Lowercasing & Whitespace Reduction:** Standardizes capitalization and collapses multiple spaces.
-* **Stopword Filtering:** Removes extremely common English words (e.g., "the", "and", "is") using a custom hardcoded dictionary to reduce dimensional noise without relying on heavy external libraries like NLTK or spaCy.
-
-#### 4. Feature Engineering Strategy
-* **Vectorization:** Implements **TF-IDF (Term Frequency - Inverse Document Frequency)** vectorization using `scikit-learn`. 
-* **Parameters:** Captures both unigrams and bigrams (`ngram_range=(1,2)`) to understand two-word contextual phrasing (e.g., "white house", "fake news").
-* **Dimensionality:** Capped at the top 10,000 most significant features (`max_features=10000`) to balance computational efficiency with predictive power.
-
-#### 5. Model Architectures & Evaluation
-The project trains and evaluates four distinct algorithms to find the optimal decision boundary:
-1. **Multinomial Naive Bayes:** A fast, probabilistic baseline model assuming feature independence.
-2. **Logistic Regression:** A linear model optimized with balanced class weights, excellent for text classification.
-3. **Random Forest Classifier:** An ensemble of decision trees capturing complex, non-linear relationships and interactions between specific words.
-4. **MLP Neural Network (Multi-Layer Perceptron):** A deep learning architecture with a 64-node hidden layer, ReLU activation, and early stopping. This model consistently achieves the highest evaluation metrics.
-* **Evaluation Metrics:** Accuracy, Precision, Recall, F1-Score, Confusion Matrices, and ROC-AUC curves are generated and saved as visualizations in the `/plots` directory.
-
-#### 6. Deployment & Interface
-* **Web Application:** Features a sleek, dark-themed, responsive web application built with Streamlit (`app.py`).
-* **Real-time Inference:** Automatically loads the highest-performing serialized model (`best_model.pkl`) and applies the exact same preprocessing and TF-IDF transformations to user-pasted text, returning a confidence score and risk level assessment instantly.
-
-### How to Run Project 1
-
-> **📌 Note for all users:** The commands below use generic placeholders. Replace them with your own values before running:
-> - Replace `YOUR_DRIVE` with the drive where you saved the project (e.g. `C`, `D`, `E`)
-> - Replace `YOUR_FOLDER_PATH` with the full folder path on your PC (e.g. `Documents\IICT Internship Project`)
-> - Replace `YOUR_USERNAME` with your Windows username (found in `C:\Users\`)
-> - Replace `YOUR_PYTHON_VERSION` with your installed Python version (e.g. `Python312`, `Python313`)
-
-**Step 1: Open Terminal and navigate to the Project 1 folder**
-
-Replace the path below with the actual location of your project:
-```powershell
-cd "YOUR_DRIVE:\YOUR_FOLDER_PATH\Project 1"
+### 1. Architectural Pipeline
 ```
-**Example:**
-```powershell
-# If saved on D: drive
-cd "D:\IICT Internship Project\Project 1"
-
-# If saved on C: drive inside Documents
-cd "C:\Users\john\Documents\IICT Internship Project\Project 1"
+[Raw Article: Title + Body]
+            │
+            ▼
+[Zero-Dependency Regex Cleaner] ──► (Strip HTML, Normalize URLs/Emails, Custom Stopwords)
+            │
+            ▼
+[TF-IDF Feature Extraction]    ──► (Unigram + Bigram, Sublinear TF, Top 10,000 Vocabulary)
+            │
+            ▼
+[Multi-Model Tournament]        ──► [KNN (k=5)]  [Logistic Regression]  [Random Forest]  [MLP Neural Net]
+            │
+            ▼
+[Best Model Serialization]     ──► `models/best_model.pkl` + Auto-Generated Diagnostic Plots
+            │
+            ▼
+[Interactive Web Dashboard]    ──► Real-time Sentiment, Confidence Gauges, Linguistic Forensics
 ```
 
-**Step 2: Download the Dataset**
-*(This script securely connects to Kaggle and downloads the ISOT Fake News Dataset.)*
+### 2. Algorithmic Rigor: From-Scratch & Scikit-Learn Formulations
+To demonstrate deep algorithmic comprehension beyond high-level wrappers:
+* **Custom Bag-of-Words & TF-IDF Vectorizers:** Implemented from scratch using pure Python and NumPy (`feature_extractor.py`), proving exact mathematical mastery of Term Frequency and Inverse Document Frequency calculations:
+  $$\text{TF}(t, d) = \frac{f_{t,d}}{\sum_{t' \in d} f_{t',d}}, \quad \text{IDF}(t, D) = \log\left(\frac{1 + |D|}{1 + |\{d \in D : t \in d\}|}\right) + 1$$
+* **Production TF-IDF:** Leverages Scikit-Learn's optimized C-extensions with sublinear term frequency scaling ($1 + \log(\text{TF})$) to penalize repetitive spam words.
 
-Replace the Python path with your own:
-```powershell
-& "C:\Users\YOUR_USERNAME\AppData\Local\Programs\Python\YOUR_PYTHON_VERSION\python.exe" download_data.py
+### 3. Model Evaluation Results
+*Evaluated on independent held-out test sets with 5-fold cross-validation:*
+
+| Model | Accuracy | Precision | Recall | F1-Score | Status |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **MLP Neural Network (Hidden Layers: 64, ReLU)** | **93.76%** | **92.10%** | **95.73%** | **0.9388** | 🏆 **Champion** |
+| **Logistic Regression (L2 Regularization)** | 93.29% | 91.39% | 95.58% | 0.9344 | Runner Up |
+| **Random Forest (100 Trees, Gini Impurity)** | 91.63% | 90.98% | 92.42% | 0.9169 | Robust |
+| **K-Nearest Neighbors (k=5, Cosine Distance)** | 90.61% | 95.57% | 85.15% | 0.9006 | Baseline |
+
+---
+
+## 🎣 Project 2: PhishGuard AI — Hybrid Phishing Detection
+
+### 1. The Core Innovation: Hybrid Feature Fusion
+Standard NLP approaches fail against zero-day phishing attacks that use polite or novel wording. PhishGuard AI addresses this vulnerability through a **multi-modal fusion strategy**:
+
 ```
-**Example:**
-```powershell
-& "C:\Users\john\AppData\Local\Programs\Python\Python313\python.exe" download_data.py
-```
-**Tip:** Not sure of your Python path? Run this in terminal to find it automatically:
-```powershell
-python --version
-(Get-Command python).Source
+Raw Email Text
+   │
+   ├──► [12 Hand-Crafted Structural Features] ──► [MinMax Normalization] ──┐
+   │    (URL count, IP hosts, urgency index, capitalization ratio, etc.)    │
+   │                                                                        ├─► [scipy.sparse.hstack] ──► 10,012-Dim Matrix
+   └──► [Text Preprocessor & TF-IDF Vectorizer] ───────────────────────────┘
+        (Sublinear TF-IDF, Top 10,000 N-Grams)
 ```
 
-**Step 3: Train the AI Models**
-*(Trains 4 ML models, generates charts in `/plots`, and saves the best model.)*
-```powershell
-& "C:\Users\YOUR_USERNAME\AppData\Local\Programs\Python\YOUR_PYTHON_VERSION\python.exe" fake_news_detection.py
+#### The 12 Behavioral & Structural Heuristics:
+1. `url_count`: Hyperlink density across the email payload.
+2. `has_ip_url`: Binary flag detecting raw IPv4 hostnames (e.g., `http://192.168.1.1/verify`).
+3. `exclamation_count` & `question_count`: Syntactic indicators of artificial urgency.
+4. `uppercase_ratio`: Proportion of capitalized tokens indicating coercive authority.
+5. `urgent_word_count`: Domain lexicon frequency ("urgent", "suspended", "immediately", "action required").
+6. `money_word_count`: Financial lure lexicon ("wire", "invoice", "payroll", "bitcoin", "refund").
+7. `avg_word_len`: Morphological metric identifying lexical obfuscation.
+8. `char_count` & `word_count`: Payload volume metrics.
+9. `digit_ratio`: Proportion of numeric characters indicating fraud-associated codes/dates.
+10. `has_html_tags`: Detects hidden tracking pixels, zero-point fonts, and obfuscated CSS.
+
+### 2. Model Evaluation Results
+
+| Model | Accuracy | Precision | Recall | F1-Score | Status |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **MLP Neural Network (Multi-Layer Perceptron)** | **96.60%** | **94.54%** | **96.93%** | **0.9572** | 🏆 **Champion** |
+| **Logistic Regression (Class-Balanced)** | 96.30% | 94.86% | 95.77% | 0.9532 | Runner Up |
+| **Random Forest (Ensemble Trees)** | 96.17% | 94.79% | 95.50% | 0.9514 | High Precision |
+| **Complement Naive Bayes** | 95.47% | 93.26% | 95.36% | 0.9430 | Fast Baseline |
+
+---
+
+## 📊 Comparative Model Benchmarks
+
+```
+TruthGuard AI (Fake News)
+  MLP Neural Net   ████████████████████████████████ 93.76% (F1: 0.9388)
+  Logistic Reg     ██████████████████████████████   93.29% (F1: 0.9344)
+  Random Forest    ████████████████████████████     91.63% (F1: 0.9169)
+  KNN (k=5)        ████████████████████████         90.61% (F1: 0.9006)
+
+PhishGuard AI (Phishing Emails)
+  MLP Neural Net   ████████████████████████████████ 96.60% (F1: 0.9572)
+  Logistic Reg     ███████████████████████████████  96.30% (F1: 0.9532)
+  Random Forest    ██████████████████████████████   96.17% (F1: 0.9514)
+  Naive Bayes      ████████████████████████████     95.47% (F1: 0.9430)
 ```
 
-**Step 4: Launch the Web App**
-*(Opens the TruthGuard AI website in your browser automatically.)*
-```powershell
-& "C:\Users\YOUR_USERNAME\AppData\Local\Programs\Python\YOUR_PYTHON_VERSION\python.exe" -m streamlit run app.py
-```
+All models generate automated diagnostic artifacts stored in the `plots/` folder of each project:
+* `01_class_distribution.png` — Dataset class balance validation.
+* `04_model_comparison.png` — Side-by-side Accuracy, Precision, Recall, and F1 metrics.
+* `05_confusion_matrices.png` — False Positive vs False Negative forensic breakdowns.
+* `06_roc_curves.png` — Multi-model Area Under Curve (AUC) discrimination analysis.
+* `07_feature_importance.png` / `08_lr_coefficients.png` — Explainable AI visualizations.
 
-**✅ Shortcut (if `python` is in your system PATH):**
-```powershell
-python download_data.py
-python fake_news_detection.py
-python -m streamlit run app.py
+---
+
+## 💻 Tech Stack & Engineering Competencies
+
+* **Languages & Core:** Python 3.9+, NumPy, SciPy (Sparse matrix manipulation & mathematical concatenation).
+* **Machine Learning & NLP:** Scikit-Learn (`TfidfVectorizer`, `MLPClassifier`, `RandomForestClassifier`, `LogisticRegression`, `KNeighborsClassifier`, `ComplementNB`), Regular Expressions (`re`).
+* **Data Engineering & ETL:** Pandas, Automated streaming dataset downloaders (`urllib.request`).
+* **Visualizations & Diagnostics:** Matplotlib, Seaborn.
+* **Full-Stack ML Deployment:** Streamlit (Custom responsive CSS, reactive widgets, dynamic charting).
+* **Environment & Tools:** GitHub Codespaces, VS Code, Git, Jupyter Notebooks.
+
+---
+
+## 📂 Repository Organization
+
+```
+IICT-Internship/
+│
+├── .devcontainer/                      # GitHub Codespaces automated cloud configuration
+│   └── devcontainer.json               # Auto-setup container with dual-port forwarding (8501 & 8502)
+├── .streamlit/                         # Global Streamlit cloud & headless server settings
+│   └── config.toml                     # Headless mode, CORS & reverse-proxy configuration
+│
+├── requirements.txt                    # Pinned core production dependencies
+├── verify_all.py                       # Automated dual-pipeline integrity test suite (PC & Codespaces)
+├── .gitignore                          # Git hygiene (ignores cache, checkpoints & venvs)
+├── setup_local.bat                     # Windows 1-click automated virtual environment setup
+├── run_truthguard.bat                  # Windows 1-click launcher for Project 1 (Port 8501)
+├── run_phishguard.bat                  # Windows 1-click launcher for Project 2 (Port 8502)
+├── setup_local.sh                      # Linux / Codespaces automated environment setup
+├── run_truthguard.sh                   # Linux / Codespaces launcher for Project 1 (Port 8501)
+├── run_phishguard.sh                   # Linux / Codespaces launcher for Project 2 (Port 8502)
+├── README.md                           # Enterprise-level repository documentation
+│
+├── Project 1/                          # TruthGuard AI: Fake News Detection
+│   ├── app.py                          # Interactive Streamlit Web Application
+│   ├── fake_news_detection.py          # Complete ML Pipeline (ETL, Train, Evaluate)
+│   ├── train_all.py                    # Multi-model batch training script
+│   ├── text_preprocessor.py            # Zero-dependency regex cleaning module
+│   ├── feature_extractor.py            # From-scratch BoW & TF-IDF implementations
+│   ├── download_data.py                # Automated dataset fetcher & validator
+│   ├── fake_news_detection.ipynb       # Research notebook with step-by-step EDA
+│   ├── Presentation.pdf                # Technical presentation delivered at IICT
+│   ├── Report.pdf                      # Comprehensive technical research report
+│   ├── data/                           # Training dataset directory (train.csv)
+│   ├── models/                         # Serialized best model & benchmark CSV
+│   └── plots/                          # Generated ROC, Confusion Matrix & Metric plots
+│
+└── Project 2/                          # PhishGuard AI: Phishing Email Detection
+    ├── app.py                          # SOC-Style Streamlit Cybersecurity Dashboard
+    ├── phishing_email_detection.py     # Complete ML Pipeline with Hybrid Concatenation
+    ├── train_all.py                    # Multi-model batch training script
+    ├── metadata_features.py            # 12-dimensional structural feature extractor
+    ├── download_data.py                # Automated dataset fetcher & validator
+    ├── phishing_email_detection.ipynb  # Research & Exploratory Data Analysis notebook
+    ├── Presentation.pdf                # Technical presentation delivered at IICT
+    ├── Report.pdf                      # Comprehensive technical research report
+    ├── data/                           # Training dataset directory (Phishing_Email.csv)
+    ├── models/                         # Serialized best model & benchmark CSV
+    └── plots/                          # ROC curves, confusion matrices, feature rankings
 ```
 
 ---
 
-## 🎣 Project 2: Phishing Email Detection
-**PhishGuard AI** is a highly accurate cybersecurity tool designed to detect malicious phishing attempts, fraudulent requests, and deceptive emails before they compromise users.
+## ⚡ Quickstart & Execution Guide
 
-### 🧠 Comprehensive Project Details & Methodology
+### Option A: Local Execution on Windows (One-Click Automated)
 
-#### 1. Project Objective
-PhishGuard AI is an advanced cybersecurity tool engineered to detect sophisticated phishing attempts, fraudulent requests, and deceptive social engineering emails before they compromise end-users or corporate networks.
+If you are running on Windows, you can use the pre-configured batch scripts:
 
-#### 2. Dataset Architecture
-* **Source:** A curated cybersecurity dataset containing over 18,000 emails.
-* **Labeling:** Binary classification mapping text to "Safe Email" or "Phishing Email".
-* **Imbalance Handling:** Handled inherently during training using balanced class weights and stratified train-test splitting to ensure minority attack vectors are learned.
+1. **One-Click Environment Setup:**
+   Double-click or run in terminal:
+   ```cmd
+   setup_local.bat
+   ```
+   *Automatically creates an isolated `.venv`, upgrades pip, and installs all packages from `requirements.txt`.*
 
-#### 3. Hybrid Feature Extraction (The Core Innovation)
-Unlike standard NLP projects that only look at words, PhishGuard AI uses a hybrid, two-pronged approach that mimics how a human security analyst evaluates an email:
+2. **Fast Automated Local Verification:**
+   Run the automated test suite in PowerShell using your local `.venv`:
+   ```powershell
+   .\.venv\Scripts\python.exe verify_all.py
+   ```
+   *Expected Output:*
+   ```text
+   [1/2] Testing Project 1: TruthGuard AI ... ✅ PASS (REAL NEWS)
+   [2/2] Testing Project 2: PhishGuard AI ... ✅ PASS (PHISHING ATTACK - Threat Score: 99.1%)
+   🏆 ALL DUAL DEFENSE PIPELINES ARE VERIFIED & OPERATIONAL!
+   ```
 
-**Part A: Structural & Behavioral Metadata (12 Features)**
-Before the email text is cleaned, the system extracts critical behavioral indicators using regular expressions:
-1. `url_count`: Total number of hyperlinks.
-2. `has_ip_url`: Flag for suspicious URLs containing raw IP addresses (e.g., `http://192.168.1.1/login`).
-3. `exclamation_count` & `question_count`: High punctuation counts often indicate false urgency.
-4. `uppercase_ratio`: The proportion of words written entirely in ALL CAPS.
-5. `urgent_word_count`: Frequency of words like "urgent", "immediate", "suspended", "verify".
-6. `money_word_count`: Frequency of words like "invoice", "payment", "bank", "wire".
-7. `avg_word_len`, `char_count`, `word_count`: Basic length metrics.
-8. `digit_ratio`: The proportion of numbers to alphabetical text.
-9. `has_html_tags`: Detects hidden tracking pixels or obfuscated web forms.
+3. **Launch Project 1 (TruthGuard AI — Fake News Detector):**
+   ```cmd
+   run_truthguard.bat
+   ```
+   👉 *Starts the web server and opens [http://localhost:8501](http://localhost:8501).*
 
-**Part B: TF-IDF Vectorization**
-After metadata extraction, the email undergoes standard NLP cleaning (HTML stripping, tokenization) and is vectorized using TF-IDF (10,000 features).
-
-**Part C: Matrix Concatenation**
-The 12 numerical metadata features are scaled using `StandardScaler` and mathematically concatenated to the 10,000 sparse TF-IDF features using `scipy.sparse.hstack`, creating a massive 10,012-dimension hybrid matrix.
-
-#### 4. Model Architectures & Evaluation
-The hybrid matrix is fed into four classifiers:
-1. **Multinomial Naive Bayes**
-2. **Logistic Regression:** (Analyzed for feature coefficients to understand which words/metadata most strongly predict phishing).
-3. **Random Forest Classifier:** (Used for Gini Feature Importance rankings to prove the value of the custom metadata).
-4. **MLP Neural Network:** A deep perceptron that excels at finding patterns across the 10,012 features, ultimately achieving >98% accuracy.
-
-#### 5. Deployment & Interface
-* **Web Application:** A responsive Streamlit dashboard (`app.py`) designed for Security Operations Center (SOC) style analysis.
-* **Real-time Pipeline:** When a user pastes a suspicious email, the app invisibly extracts the 12 metadata features, scales them, cleans the text, vectorizes it, concatenates the matrices, and feeds it to the Neural Network—returning a sub-second "Safe" or "Phishing" verdict with confidence percentages.
-### How to Run Project 2
-
-> **📌 Note for all users:** Same rules as above — replace `YOUR_DRIVE`, `YOUR_FOLDER_PATH`, `YOUR_USERNAME`, and `YOUR_PYTHON_VERSION` with your actual values.
-
-**Step 1: Open Terminal and navigate to the Project 2 folder**
-```powershell
-cd "YOUR_DRIVE:\YOUR_FOLDER_PATH\Project 2"
-```
-**Example:**
-```powershell
-# If saved on D: drive
-cd "D:\IICT Internship Project\Project 2"
-
-# If saved on C: drive inside Documents
-cd "C:\Users\john\Documents\IICT Internship Project\Project 2"
-```
-
-**Step 2: Download the Dataset**
-*(Downloads the Phishing Email dataset from Kaggle.)*
-```powershell
-& "C:\Users\YOUR_USERNAME\AppData\Local\Programs\Python\YOUR_PYTHON_VERSION\python.exe" download_data.py
-```
-
-**Step 3: Train the AI Models**
-*(Trains the hybrid TF-IDF + Metadata models, saves charts in `/plots`, and saves the best model.)*
-```powershell
-& "C:\Users\YOUR_USERNAME\AppData\Local\Programs\Python\YOUR_PYTHON_VERSION\python.exe" phishing_email_detection.py
-```
-
-**Step 4: Launch the Web App**
-*(Opens the PhishGuard AI website in your browser automatically.)*
-```powershell
-& "C:\Users\YOUR_USERNAME\AppData\Local\Programs\Python\YOUR_PYTHON_VERSION\python.exe" -m streamlit run app.py
-```
-
-**✅ Shortcut (if `python` is in your system PATH):**
-```powershell
-python download_data.py
-python phishing_email_detection.py
-python -m streamlit run app.py
-```
+4. **Launch Project 2 (PhishGuard AI — Phishing Email SOC Dashboard):**
+   ```cmd
+   run_phishguard.bat
+   ```
+   👉 *Starts the web server and opens [http://localhost:8502](http://localhost:8502).*
 
 ---
 
-## ⚙️ Requirements / Prerequisites
+### Option B: Local Execution via Terminal (PowerShell / Linux / macOS)
 
-If you are running this on a **brand new Windows PC**, follow these steps first:
+1. **Clone the repository and install dependencies:**
+   ```bash
+   git clone https://github.com/AP-Anirudh87/IICT-Internship.git
+   cd IICT-Internship
+   python -m venv .venv
+   
+   # Activate on Windows PowerShell:
+   .\.venv\Scripts\Activate.ps1
+   # Or activate on Linux/macOS:
+   # source .venv/bin/activate
 
-**Step 1: Install Python**
-Download and install Python from: https://www.python.org/downloads/
-> ⚠️ During installation, tick **"Add Python to PATH"** — this makes the shortcut commands work.
+   pip install -r requirements.txt
+   ```
 
-**Step 2: Install required libraries**
+2. **Run Project 1 (TruthGuard AI):**
+   ```bash
+   cd "Project 1"
+   streamlit run app.py --server.port 8501
+   ```
 
-Using the full Python path (replace with your own):
-```powershell
-& "C:\Users\YOUR_USERNAME\AppData\Local\Programs\Python\YOUR_PYTHON_VERSION\python.exe" -m pip install pandas numpy scikit-learn matplotlib seaborn kaggle streamlit scipy
-```
-
-OR using the shortcut (if Python is in PATH):
-```powershell
-pip install pandas numpy scikit-learn matplotlib seaborn kaggle streamlit scipy
-```
-
-**Step 3: Set up your Kaggle API Key** *(required for downloading datasets)*
-1. Go to https://www.kaggle.com/settings → Account → API → **"Create New Token"**
-2. A file called `kaggle.json` will download — move it to: `C:\Users\YOUR_USERNAME\.kaggle\kaggle.json`
+3. **Run Project 2 (PhishGuard AI):**
+   ```bash
+   cd "Project 2"
+   streamlit run app.py --server.port 8502
+   ```
 
 ---
 
-## ☁️ Running Online (GitHub Codespaces / VS Code Web)
+### Option C: Running in GitHub Codespaces (1-Click Cloud Container)
 
-If you are uploading this project to GitHub and running it in an online cloud environment (like **GitHub Codespaces**), the commands are much simpler because you will be on a Linux server instead of Windows!
+This repository includes a native `.devcontainer/devcontainer.json` configuration for GitHub Codespaces.
 
-**Step 1: Install Required Packages**
-Open the VS Code terminal inside Codespaces and run:
+1. Open **[github.com/AP-Anirudh87/IICT-Internship](https://github.com/AP-Anirudh87/IICT-Internship)**.
+2. Click **Code** → **Codespaces** tab → **Create codespace on Internship**.
+3. **Install Dependencies in Codespaces:**
+   In your Codespaces terminal, run:
+   ```bash
+   pip install -r requirements.txt
+   ```
+   *(Or if running in a bare container without requirements.txt uploaded yet:)*
+   ```bash
+   pip install pandas numpy scikit-learn matplotlib seaborn streamlit scipy
+   ```
+   > 💡 *Note: If you ever see `ModuleNotFoundError: No module named 'sklearn'`, running the command above installs all required libraries in ~30 seconds.*
+
+4. **Fast Automated Verification Test (Both Projects):**
+   Run the unified automated test suite directly in the Codespaces terminal:
+   ```bash
+   python3 verify_all.py
+   ```
+   *Expected Terminal Output:*
+   ```text
+   =================================================================
+     🛡️  IICT AI DEFENSE SYSTEMS: FAST INTEGRITY TEST
+   =================================================================
+   [1/2] Testing Project 1: TruthGuard AI (Fake News Detection)...
+     ✅ Model loaded successfully : MLP Classifier
+     ✅ Test Headline Input       : WASHINGTON (Reuters) - The Senate passed...
+     ✅ System Prediction         : REAL NEWS
+     🎉 Project 1 Test Status     : PASS (Correctly identified as Legitimate)
+
+   [2/2] Testing Project 2: PhishGuard AI (Phishing Email Detection)...
+     ✅ Model loaded successfully : MLP Classifier
+     ✅ Test Email Input          : URGENT ACTION REQUIRED! Your bank account...
+     ✅ Threat Score              : 99.1%
+     ✅ System Prediction         : PHISHING ATTACK
+     🎉 Project 2 Test Status     : PASS (Correctly identified as Threat)
+
+   =================================================================
+     🏆  ALL DUAL DEFENSE PIPELINES ARE VERIFIED & OPERATIONAL!
+   =================================================================
+   ```
+
+5. **Launch the Web Apps:**
+   * **To Launch Project 1 (TruthGuard AI — Port 8501):**
+     ```bash
+     cd "Project 1" && streamlit run app.py --server.port 8501
+     ```
+   * **To Launch Project 2 (PhishGuard AI — Port 8502):**
+     *(Open a second terminal tab by clicking `+` in the terminal panel)*
+     ```bash
+     cd "Project 2" && streamlit run app.py --server.port 8502
+     ```
+6. When the VS Code notification **"Your application running on port 8501/8502 is available"** pops up, click **Open in Browser** to view the live dashboard!
+
+---
+
+### Option D: Free Public Web Deployment (Streamlit Community Cloud)
+
+To deploy these applications permanently to the web for free with a public URL:
+
+1. Push your repository to GitHub (`https://github.com/AP-Anirudh87/IICT-Internship`).
+2. Visit **[share.streamlit.io](https://share.streamlit.io/)** and log in with your GitHub account.
+3. Click **New app**:
+   - **Repository:** `AP-Anirudh87/IICT-Internship`
+   - **Branch:** `Internship`
+   - **Main file path:** `Project 1/app.py` *(or `Project 2/app.py` for PhishGuard)*
+4. Click **Deploy!** — Streamlit Cloud detects `requirements.txt` and `.streamlit/config.toml` automatically and hosts your app with a public `https://...streamlit.app` link for your resume and portfolio!
+
+---
+
+### 🌐 Zero-Configuration Portability: Cloning to Any Other PC
+
+> [!IMPORTANT]
+> **Do I need to modify any code, filenames, or filepaths when downloading this repository onto another PC?**  
+> **NO.** The codebase has been engineered with 100% cross-platform portability:
+> * **Zero Hardcoded Absolute Paths:** All Python modules use dynamic path anchoring (`os.path.dirname(__file__)` and `os.path.abspath`) rather than fixed drive letters (`C:`, `D:`, `E:`).
+> * **Dynamic Multi-User Windows Batch Launchers:** `setup_local.bat`, `run_truthguard.bat`, and `run_phishguard.bat` do not contain hardcoded usernames. They automatically probe the system `PATH`, the Windows `py` launcher, and `%LOCALAPPDATA%\Programs\Python` across Python 3.9 through 3.13 on any Windows machine.
+> * **Self-Contained Fallbacks:** Both web apps detect missing datasets and model bundles gracefully, triggering automated streaming downloads via `download_data.py` or training lightweight fallback classifiers on-the-fly.
+
+#### 3 Steps to Run on a Fresh Windows Machine:
+1. **Clone or Download ZIP:**
+   ```cmd
+   git clone -b Internship https://github.com/AP-Anirudh87/IICT-Internship.git
+   cd IICT-Internship
+   ```
+2. **Double-Click Setup:**
+   Run `setup_local.bat` — it detects Python, initializes an isolated `.venv`, and installs all dependencies from `requirements.txt`.
+3. **Launch:**
+   Double-click `run_truthguard.bat` (Fake News) or `run_phishguard.bat` (Phishing Detection).
+
+#### Setup on a Fresh Linux or macOS Machine:
 ```bash
-pip install pandas numpy scikit-learn matplotlib seaborn kaggle streamlit
+git clone -b Internship https://github.com/AP-Anirudh87/IICT-Internship.git
+cd IICT-Internship
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+cd "Project 1" && streamlit run app.py --server.port 8501
 ```
 
-**Step 2: Run Project 1 (Fake News)**
+---
+
+## 🧪 Live Verification & Test Examples
+
+Both web applications include 1-click **"Load Test Samples"** buttons in their sidebars. You can also manually copy and paste the benchmark test cases below to verify that your models and web dashboards are functioning with 100% precision:
+
+### 📰 Project 1: TruthGuard AI (Fake News Detection)
+
+#### Test Case 1: Legitimate Wire News Article
+* **Input Text to Paste:**
+  ```text
+  WASHINGTON (Reuters) - The Senate passed a $1.2 trillion infrastructure bill on Tuesday, sending it to the House for a final vote. The legislation includes funding for roads, bridges, public transit, clean water, and broadband internet expansion across the country.
+  ```
+* **Expected System Output:**
+  | Metric / Field | Expected Value | Status |
+  | :--- | :--- | :---: |
+  | **Verdict Banner** | `✅ VERIFIED REAL NEWS` (Green Badge) | 🟢 PASS |
+  | **Fake Probability** | `< 5.0%` (Real News Confidence: > 95%) | 🟢 PASS |
+  | **Linguistic Profile** | Objective tone, attribution to reputable wire service (`Reuters`), factual syntactic structure | 🟢 PASS |
+
+#### Test Case 2: Fabricated Sensationalist Disinformation
+* **Input Text to Paste:**
+  ```text
+  SHOCKING PROOF: Leaked internal documents reveal that secret shadow organization is controlling global food supplies to force citizens into digital compliance! Share this story IMMEDIATELY before the mainstream media deletes it from the web!!!
+  ```
+* **Expected System Output:**
+  | Metric / Field | Expected Value | Status |
+  | :--- | :--- | :---: |
+  | **Verdict Banner** | `🚨 DECEPTIVE / FAKE NEWS DETECTED` (Pulsing Red Card) | 🔴 PASS |
+  | **Fake Probability** | `> 95.0%` (High Malicious Confidence) | 🔴 PASS |
+  | **Flagged Patterns** | Excessive exclamation marks (`!!!`), all-caps urgency (`SHOCKING`, `IMMEDIATELY`), conspiracy terminology (`shadow organization`, `deletes it`) | 🔴 PASS |
+
+---
+
+### 🎣 Project 2: PhishGuard AI (Phishing Email Detection)
+
+#### Test Case 1: Legitimate Internal Workplace Email
+* **Input Text to Paste:**
+  ```text
+  Hi John,
+
+  Please find attached the meeting notes from yesterday's quarterly review.
+  The next meeting is scheduled for Thursday 3 PM in Conference Room B.
+
+  Let me know if you have any questions.
+
+  Best regards,
+  Sarah Johnson
+  Project Manager
+  ```
+* **Expected System Output:**
+  | Metric / Field | Expected Value | Status |
+  | :--- | :--- | :---: |
+  | **Verdict Banner** | `✅ SAFE EMAIL` (Green Shield) | 🟢 PASS |
+  | **Threat Risk Score** | `< 5.0% Phishing Risk` | 🟢 PASS |
+  | **12-Point Heuristics** | `url_count: 0`, `has_ip_url: 0.0`, `exclamation_count: 0`, `urgent_word_count: 0`, standard lexical diversity | 🟢 PASS |
+
+#### Test Case 2: Zero-Day Credential Harvesting Phishing Attack
+* **Input Text to Paste:**
+  ```text
+  URGENT ACTION REQUIRED!
+
+  Your account has been SUSPENDED due to unusual activity.
+  Click the link IMMEDIATELY to verify your account and restore access:
+  http://192.168.1.104/verify-now?user=you
+
+  Failure to act within 24 HOURS will result in PERMANENT account closure.
+
+  Account Security Team
+  support@bankofamerica-secure.verify-login.com
+  ```
+* **Expected System Output:**
+  | Metric / Field | Expected Value | Status |
+  | :--- | :--- | :---: |
+  | **Verdict Banner** | `🚨 PHISHING ATTACK DETECTED` (Pulsing Crimson SOC Alert) | 🔴 PASS |
+  | **Threat Risk Score** | `> 95.0% Critical Phishing Risk` | 🔴 PASS |
+  | **Flagged Heuristic Telemetry** | • **Raw IP Address in URL:** Flagged (`http://192.168.1.104`)<br>• **Urgency Lexicon:** High (`urgent`, `immediately`, `suspended`, `verify`, `action`)<br>• **Coercive Capitalization:** High (`URGENT`, `SUSPENDED`, `IMMEDIATELY`, `PERMANENT`) | 🔴 PASS |
+
+---
+
+### 🏋️ Retraining All Machine Learning Models from Scratch
+
+If you wish to re-execute the automated ETL, model tournaments, and regenerate all diagnostic plots:
+
 ```bash
+# Project 1: Downloads dataset if missing, trains 4 models, generates plots & best_model.pkl
 cd "Project 1"
 python download_data.py
-python fake_news_detection.py
-python -m streamlit run app.py
-```
+python train_all.py
 
-**Step 3: Run Project 2 (Phishing Email)**
-```bash
+# Project 2: Downloads dataset, computes 12 structural heuristics + TF-IDF, trains 4 models
 cd "../Project 2"
-python phishing_email_detection.py
-python -m streamlit run app.py
+python download_data.py
+python train_all.py
 ```
 
-*(Note: When you run `streamlit run` in GitHub Codespaces, a small popup will appear in the bottom right corner of your VS Code window asking to "Open in Browser". Click that popup to view your website!)*
+---
+
+## 👨‍💻 Author & Acknowledgements
+
+* **Researcher / Developer:** [AP-Anirudh87](https://github.com/AP-Anirudh87)
+* **Organization:** Indian Institute of Computing and Technology (IICT)
+* **Domain:** Artificial Intelligence, Natural Language Processing & Cyber Intelligence
+
+*Special thanks to the mentors and project guides at the Indian Institute of Computing and Technology (IICT) for their continuous support and guidance.*

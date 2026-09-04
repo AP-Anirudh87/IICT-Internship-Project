@@ -1,0 +1,5 @@
+Model,Accuracy,Precision,Recall,F1-Score
+KNN (k=5),0.9061,0.9557,0.8515,0.9006
+Logistic Regression,0.9329,0.9139,0.9558,0.9344
+Random Forest,0.9163,0.9098,0.9242,0.9169
+MLP Neural Network,0.9376,0.921,0.9573,0.9388

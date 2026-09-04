@@ -130,14 +130,7 @@ df.columns = [c.strip().lower() for c in df.columns]
 for col in ["title", "author", "text"]:
     df[col] = df[col].fillna("") if col in df.columns else ""
 
-# ── Normalise label: 1 = Fake, 0 = Real ──────────────────────────────────────
-if df["label"].dtype == object:
-    mapping = {"FAKE": 1, "FALSE": 1, "1": 1, "REAL": 0, "TRUE": 0, "0": 0}
-    df["label"] = df["label"].str.upper().str.strip().map(mapping)
-
-df["label"] = pd.to_numeric(df["label"], errors="coerce")
-df.dropna(subset=["label"], inplace=True)
-df["label"] = df["label"].astype(int)
+df["label"] = df["label"].apply(lambda x: 1 if str(x).strip().upper() in ["FAKE", "FALSE", "1"] else 0)
 
 print(f"\n  Clean shape : {df.shape}")
 print(f"  Class counts (0=Real, 1=Fake) : {df['label'].value_counts().to_dict()}")

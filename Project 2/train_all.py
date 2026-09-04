@@ -73,7 +73,7 @@ df.rename(columns={"Email Text": "text", "Email Type": "label"}, inplace=True)
 df.drop(columns=[c for c in df.columns if "Unnamed" in c], inplace=True)
 df.dropna(subset=["text"], inplace=True)
 df["text"]      = df["text"].astype(str)
-df["label_int"] = (df["label"] == "Phishing Email").astype(int)
+df["label_int"] = df["label"].apply(lambda x: 1 if "phish" in str(x).lower() else 0)
 print(f"  Rows   : {len(df):,}")
 print(f"  Labels : {df['label'].value_counts().to_dict()}")
 

@@ -73,9 +73,7 @@ print(f"  Columns : {df.columns.tolist()}")
 #   Kaggle: id / title / author / text / label  (0=Real, 1=Fake)
 #   lutzhamel: Unnamed:0 / title / text / label (REAL/FAKE string)
 if "label" in df.columns:
-    if df["label"].dtype == object:
-        df["label"] = (df["label"].str.upper() == "FAKE").astype(int)
-    df["label"] = df["label"].astype(int)
+    df["label"] = df["label"].apply(lambda x: 1 if str(x).strip().upper() in ["FAKE", "1"] else 0)
 
 for col in ["title", "text"]:
     if col in df.columns:

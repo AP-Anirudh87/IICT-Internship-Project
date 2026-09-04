@@ -70,6 +70,7 @@ class EmailMetadataExtractor:
         "url_count",
         "has_ip_url",
         "exclamation_count",
+        "question_count",
         "uppercase_ratio",
         "urgent_word_count",
         "money_word_count",
@@ -77,7 +78,6 @@ class EmailMetadataExtractor:
         "char_count",
         "word_count",
         "digit_ratio",
-        "special_char_count",
         "has_html_tags",
     ]
 
@@ -101,42 +101,42 @@ class EmailMetadataExtractor:
         # 3. Exclamation count
         exclamation_count = float(text.count("!"))
 
-        # 4. Uppercase word ratio
+        # 4. Question count
+        question_count = float(text.count("?"))
+
+        # 5. Uppercase word ratio
         if n_words > 0:
             upper_words   = sum(1 for w in words if w.isupper() and len(w) > 1)
             uppercase_ratio = upper_words / n_words
         else:
             uppercase_ratio = 0.0
 
-        # 5. Urgent word count
+        # 6. Urgent word count
         words_lower = text_lower.split()
         urgent_word_count = float(
             sum(1 for w in words_lower if w.strip(".,!?;:\"'()") in URGENT_WORDS)
         )
 
-        # 6. Money word count
+        # 7. Money word count
         money_word_count = float(
             sum(1 for w in words_lower if w.strip(".,!?;:\"'()") in MONEY_WORDS)
         )
 
-        # 7. Average word length
+        # 8. Average word length
         if n_words > 0:
             avg_word_len = sum(len(w) for w in words) / n_words
         else:
             avg_word_len = 0.0
 
-        # 8. Character count (log-scaled for large variance)
+        # 9. Character count (log-scaled for large variance)
         char_count = float(math.log1p(n_chars))
 
-        # 9. Word count (log-scaled)
+        # 10. Word count (log-scaled)
         word_count = float(math.log1p(n_words))
 
-        # 10. Digit ratio
+        # 11. Digit ratio
         n_digits    = len(_DIGIT_RE.findall(text))
         digit_ratio = n_digits / max(n_chars, 1)
-
-        # 11. Special character count
-        special_char_count = float(len(_SPECIAL_CHAR.findall(text)))
 
         # 12. Has HTML tags
         has_html_tags = float(bool(_HTML_TAG.search(text)))
@@ -145,6 +145,7 @@ class EmailMetadataExtractor:
             "url_count"          : float(url_count),
             "has_ip_url"         : has_ip_url,
             "exclamation_count"  : exclamation_count,
+            "question_count"     : question_count,
             "uppercase_ratio"    : uppercase_ratio,
             "urgent_word_count"  : urgent_word_count,
             "money_word_count"   : money_word_count,
@@ -152,7 +153,6 @@ class EmailMetadataExtractor:
             "char_count"         : char_count,
             "word_count"         : word_count,
             "digit_ratio"        : digit_ratio,
-            "special_char_count" : special_char_count,
             "has_html_tags"      : has_html_tags,
         }
 

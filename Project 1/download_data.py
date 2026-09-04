@@ -13,7 +13,8 @@ import urllib.request
 # ── Configuration ────────────────────────────────────────────────────────────
 # Confirmed-live mirror (30 MB, ~6,335 rows, columns: title | text | label)
 DATASET_URL = (
-    "https://raw.githubusercontent.com/lutzhamel/fake-news/master/data/fake_or_real_news.csv"
+    "https://raw.githubusercontent.com/"
+    "lutzhamel/fake-news/master/data/fake_or_real_news.csv"
 )
 DATA_DIR  = os.path.join(os.path.dirname(__file__), "data")
 SAVE_PATH = os.path.join(DATA_DIR, "train.csv")

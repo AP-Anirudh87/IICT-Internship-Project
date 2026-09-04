@@ -149,7 +149,7 @@ def load_or_train_model():
                 bundle = pickle.load(f)
             vec   = bundle["vectorizer"]
             model = bundle["model"]
-            m_name= bundle.get("model_name", "MLP Neural Network")
+            m_name= bundle.get("name", bundle.get("model_name", "MLP Neural Network"))
             return vec, model, m_name
         except Exception as e:
             st.warning(f"Error loading model pickle: {e}. Training fallback model …")
@@ -160,8 +160,8 @@ def load_or_train_model():
         return None, None, None
 
     df = pd.read_csv(data_path)
-    if "label" in df.columns and df["label"].dtype == object:
-        df["label"] = (df["label"].str.upper() == "FAKE").astype(int)
+    if "label" in df.columns:
+        df["label"] = df["label"].apply(lambda x: 1 if str(x).strip().upper() in ["FAKE", "1"] else 0)
     
     tp = TextPreprocessor()
     df["text_combined"] = (df.get("title", "").fillna("") + " " + df.get("text", "").fillna(""))
